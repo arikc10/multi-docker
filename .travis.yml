@@ -1,0 +1,23 @@
+tephengrider/arikctephengrider/udo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t arikc/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true arikc/react-test npm test
+
+after_success:
+  - docker build -t arikc/multi-client ./client
+  - docker build -t arikc/multi-nginx ./nginx
+  - docker build -t arikc/multi-server ./server
+  - docker build -t arikc/multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push arikc/multi-client
+  - docker push arikc/multi-nginx
+  - docker push arikc/multi-server
+  - docker push arikc/multi-worker
+
