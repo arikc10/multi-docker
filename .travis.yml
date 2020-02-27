@@ -1,4 +1,4 @@
-tephengrider/arikctephengrider/udo: required
+sudo: required
 services:
   - docker
 
